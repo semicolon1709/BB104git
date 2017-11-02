@@ -49,7 +49,7 @@ def contendClawer(linkList):
         count+=1
         print(count)
         print(resDict[titleStr])
-    with open('/home/yunhan/Desktop/apple.json', 'w') as f:  #將resDict存為json檔
+    with open('./apple.json', 'w') as f:  #將resDict存為json檔
         f.write(json.dumps(resDict, ensure_ascii=False, indent=4))
 
 if __name__ == "__main__":
