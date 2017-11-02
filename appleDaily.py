@@ -15,13 +15,16 @@ def newsURLClawer(pages=5):
     '''
 
     linkList = []
+
     for i in range(1,pages+1):
         res = r.get(rawURL.format(i))
         soup = bs(res.text, "html5lib")
         for i in range(len(soup.select("li.rtddt > a"))):
-            urlList = soup.select("li.rtddt > a")[i].get_attribute_list("href")
-            linkList.extend(urlList)
+            urlStr = soup.select("li.rtddt > a")[i].get("href")
+            linkList.append(urlStr)
+            print(urlStr)
     contendClawer(linkList)
+
 
 
 def contendClawer(linkList):
