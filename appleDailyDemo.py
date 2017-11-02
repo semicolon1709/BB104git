@@ -3,9 +3,6 @@ import json
 from bs4 import BeautifulSoup as bs
 
 
-
-pageContentList = []
-
 rawURL = "https://tw.appledaily.com/new/realtime/{}" #蘋果即時新聞網頁
 
 def newsURLClawer(pages=5):
