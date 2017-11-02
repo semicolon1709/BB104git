@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup as bs
 
 rawURL = "https://tw.appledaily.com/new/realtime/{}" #蘋果即時新聞網頁
 
-def newsURLClawer(pages=5):
+def newsURLCrawler(pages=5):
     '''
     爬取蘋果即時新聞連結網址。
     參數：page-欲爬取的頁數，預設為5頁。
@@ -24,7 +24,7 @@ def newsURLClawer(pages=5):
 
 
 
-def contendClawer(linkList):
+def contendCrawler(linkList):
     '''
        依傳入的蘋果即時新聞連結網址爬取新聞內容。
        參數：linkList-新聞網址 LIST。
@@ -50,4 +50,4 @@ def contendClawer(linkList):
         f.write(json.dumps(resDict, ensure_ascii=False, indent=4))
 
 if __name__ == "__main__":
-    newsURLClawer(3)
+    newsURLCrawler(3)
