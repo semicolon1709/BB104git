@@ -33,7 +33,7 @@ def contendCrawler(linkList, intervalTime):
     count = 0
     resDict = {}
     timeList = intervalTimeListGenerator(intervalTime) # 產生時間清單
-    with open('/home/yunhan/Desktop/apple.json', 'w') as f:  # 將resDict存為json檔
+    with open('./apple.json', 'w') as f:  # 將resDict存為json檔
         for link in linkList:
             articleSoup = bs(r.get(link).text, "lxml")
             timeStr = articleSoup.select_one("hgroup > div.ndArticle_creat").text.split("：")[1].strip()  # 爬取新聞時間
