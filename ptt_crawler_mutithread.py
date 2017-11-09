@@ -84,6 +84,6 @@ if __name__ == "__main__":
         f.write(json.dumps(resList, ensure_ascii=False, indent=4))
 
     print("執行緒:" + str(numThread))
-    print("文章數"+ str(len(resList)))
+    print("文章數:"+ str(len(resList)))
     print("耗時:" + timeSpent)
 
