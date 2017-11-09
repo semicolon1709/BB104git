@@ -5,6 +5,11 @@ from threading import Thread
 from datetime import datetime
 import json
 
+domain = "http://www.ptt.cc"
+firstURL = "https://www.ptt.cc/bbs/nba/index.html"
+baseUrl = "https://www.ptt.cc/bbs/nba/index{}.html"
+resList = []
+queue = Queue()
 
 def worker():
     while not queue.empty():
@@ -50,17 +55,12 @@ def crawler(page):
             pass
 
 if __name__ == "__main__":
-    domain = "http://www.ptt.cc"
-    firstURL = "https://www.ptt.cc/bbs/nba/index.html"
-    baseUrl = "https://www.ptt.cc/bbs/nba/index{}.html"
-    resList = []
     res = r.get(firstURL)
     soup = bs(res.text, "lxml")
     pageNum = int(soup.select_one("div.btn-group-paging").select("a.btn")[1]["href"]\
                   .split("index")[1].split(".")[0]) + 1
     numThread = 20
     page_grab_num = 30
-    queue = Queue()
 
     for i in range(pageNum, pageNum - page_grab_num, -1):  # 將要爬取的頁數放在queue等待
         queue.put(i)
