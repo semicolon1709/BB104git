@@ -20,7 +20,7 @@ def newsURLCrawler(pages=5):
             urlStr = soup.select("li.rtddt > a")[i].get("href")
             linkList.append(urlStr)
             print(urlStr)
-    contendCrawler(linkList)
+    contendClawer(linkList)
 
 
 
