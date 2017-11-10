@@ -11,20 +11,23 @@ baseUrl = "https://www.ptt.cc/bbs/nba/index{}.html"
 resList = []
 queue = Queue()
 
+
 def worker():
     while not queue.empty():
-        page=queue.get()
+        page = queue.get()
         crawler(page)
 
+
 def crawler(page):
-    
+
     '''
     :param page:int 要爬取的page: 
     '''
-    
-    url =baseUrl.format(page)
-    res = r.get(url)
-    soup = bs(res.text, "lxml")
+
+    print("page " + str(page) + " crawler started")
+    url = baseUrl.format(page)
+    pageRes = r.get(url)
+    soup = bs(pageRes.text, "lxml")
     articleNum = soup.select("div.r-ent")
     for article in range(len(articleNum)):
         articleDict = {
@@ -51,16 +54,20 @@ def crawler(page):
                                       .select_one("span.article-meta-value").text.strip()
             articleDict['content']  = soupContent.select_one("div#main-content").text
             resList.append(articleDict)
+
         except:
             pass
+    print("page " + str(page) + " crawler done")
+
 
 if __name__ == "__main__":
+
     res = r.get(firstURL)
     soup = bs(res.text, "lxml")
     pageNum = int(soup.select_one("div.btn-group-paging").select("a.btn")[1]["href"]\
                   .split("index")[1].split(".")[0]) + 1
-    numThread = 20
-    page_grab_num = 30
+    numThread = 10
+    page_grab_num = 10
 
     for i in range(pageNum, pageNum - page_grab_num, -1):  # 將要爬取的頁數放在queue等待
         queue.put(i)
@@ -84,6 +91,6 @@ if __name__ == "__main__":
         f.write(json.dumps(resList, ensure_ascii=False, indent=4))
 
     print("執行緒:" + str(numThread))
-    print("文章數:"+ str(len(resList)))
+    print("文章數:" + str(len(resList)))
     print("耗時:" + timeSpent)
 
