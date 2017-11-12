@@ -48,6 +48,7 @@ def crawler(page):
             resList.append(articleDict)
         except:
             pass
+    print("page:" + str(page) + " done")
 
 if __name__ == "__main__":
 
