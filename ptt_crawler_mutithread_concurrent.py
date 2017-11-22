@@ -1,6 +1,6 @@
 import requests as r
 from bs4 import BeautifulSoup as bs
-from queue import Queue
+# from queue import Queue
 from concurrent.futures import ThreadPoolExecutor, wait
 from datetime import datetime
 import json
@@ -9,7 +9,7 @@ domain = "http://www.ptt.cc"
 firstURL = "https://www.ptt.cc/bbs/nba/index.html"
 baseUrl = "https://www.ptt.cc/bbs/nba/index{}.html"
 resList = []
-queue = Queue()
+
 
 def crawler(page):
     
@@ -61,32 +61,32 @@ if __name__ == "__main__":
     pageNum = int(soup.select_one("div.btn-group-paging").select("a.btn")[1]["href"]\
                   .split("index")[1].split(".")[0]) + 1
 
-    # threads = ThreadPoolExecutor(numThread)
-    # futures = []
-    # thStart = datetime.now()
-    # for page in range(pageNum, pageNum - page_grab_num, -1):
-    #     futures.append(threads.submit(crawler, page))
-    # wait(futures)
-    # thEnd = datetime.now()
-    # timeSpent = str(thEnd - thStart).split('.')[0]
-    #
-    # with open('pttCrawler.json', 'w', encoding="utf-8") as f:  # 將resList存為json檔
-    #     f.write(json.dumps(resList, ensure_ascii=False, indent=4))
-    #
-    # print("執行緒:" + str(numThread))
-    # print("文章數:" + str(len(resList)))
-    # print("耗時:" + timeSpent)
-
-    pageList = [ page for page in range(pageNum, pageNum - page_grab_num, -1)]
+    threads = ThreadPoolExecutor(numThread)
+    futures = []
     thStart = datetime.now()
-    with ThreadPoolExecutor(max_workers=numThread) as executor:
-        for page, data in zip(pageList, executor.map(crawler, pageList)):
-            print('page:{} done'.format(page))
+    for page in range(pageNum, pageNum - page_grab_num, -1):
+        futures.append(threads.submit(crawler, page))
+    wait(futures)
     thEnd = datetime.now()
     timeSpent = str(thEnd - thStart).split('.')[0]
-
+    
+    with open('pttCrawler.json', 'w', encoding="utf-8") as f:  # 將resList存為json檔
+        f.write(json.dumps(resList, ensure_ascii=False, indent=4))
+    
     print("執行緒:" + str(numThread))
-    print("文章數:"+ str(len(resList)))
+    print("文章數:" + str(len(resList)))
     print("耗時:" + timeSpent)
+
+#     pageList = [ page for page in range(pageNum, pageNum - page_grab_num, -1)]
+#     thStart = datetime.now()
+#     with ThreadPoolExecutor(max_workers=numThread) as executor:
+#         for page, data in zip(pageList, executor.map(crawler, pageList)):
+#             print('page:{} done'.format(page))
+#     thEnd = datetime.now()
+#     timeSpent = str(thEnd - thStart).split('.')[0]
+
+#     print("執行緒:" + str(numThread))
+#     print("文章數:"+ str(len(resList)))
+#     print("耗時:" + timeSpent)
 
 
