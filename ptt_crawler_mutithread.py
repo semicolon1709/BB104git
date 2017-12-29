@@ -6,17 +6,15 @@ from datetime import datetime
 import json
 
 domain = "http://www.ptt.cc"
-firstURL = "https://www.ptt.cc/bbs/nba/index.html"
-baseUrl = "https://www.ptt.cc/bbs/nba/index{}.html"
-resList = []
-queue = Queue()
+first_url = "https://www.ptt.cc/bbs/nba/index.html"
+base_url = "https://www.ptt.cc/bbs/nba/index{}.html"
+
 
 
 def worker():
     while not queue.empty():
         page = queue.get()
         crawler(page)
-
 
 def crawler(page):
 
@@ -25,12 +23,12 @@ def crawler(page):
     '''
 
     print("page " + str(page) + " crawler started")
-    url = baseUrl.format(page)
-    pageRes = r.get(url)
-    soup = bs(pageRes.text, "lxml")
-    articleNum = soup.select("div.r-ent")
-    for article in range(len(articleNum)):
-        articleDict = {
+    url = base_url.format(page)
+    page_res = r.get(url)
+    soup = bs(page_res.text, "lxml")
+    articles = soup.select("div.r-ent")
+    for article in articles:
+        article_dict = {
             "title": "",
             "category": "",
             "pushCount": "",
@@ -40,20 +38,20 @@ def crawler(page):
         }
 
         try:
-            articleDict['pushCount'] = articleNum[article].select_one("span.hl").text.strip()
-            contentUrl = articleNum[article].select_one("div.title > a")["href"].strip()
-            soupContent = bs(r.get(domain + contentUrl).text, "lxml")
-            articleDict['author']   = soupContent.select("div.article-metaline")[0]\
+            article_dict['pushCount'] = article.select_one("span.hl").text.strip()
+            content_url = article.select_one("div.title > a")["href"].strip()
+            soup_content = bs(r.get(domain + content_url).text, "lxml")
+            article_dict['author']   = soup_content.select("div.article-metaline")[0]\
                                       .select_one("span.article-meta-value").text.split("(")[0].strip()
-            articleDict['title']    = soupContent.select("div.article-metaline")[1]\
+            article_dict['title']    = soup_content.select("div.article-metaline")[1]\
                                       .select_one("span.article-meta-value").text.strip()
-            articleDict['category'] = soupContent.select("div.article-metaline")[1]\
+            article_dict['category'] = soup_content.select("div.article-metaline")[1]\
                                       .select_one("span.article-meta-value").text\
                                       .split(']')[0].split('[')[1].strip()
-            articleDict['date']     = soupContent.select("div.article-metaline")[2]\
+            article_dict['date']     = soup_content.select("div.article-metaline")[2]\
                                       .select_one("span.article-meta-value").text.strip()
-            articleDict['content']  = soupContent.select_one("div#main-content").text
-            resList.append(articleDict)
+            article_dict['content']  = soup_content.select_one("div#main-content").text
+            res_list.append(article_dict)
 
         except:
             pass
@@ -61,36 +59,36 @@ def crawler(page):
 
 
 if __name__ == "__main__":
-
-    res = r.get(firstURL)
-    soup = bs(res.text, "lxml")
-    pageNum = int(soup.select_one("div.btn-group-paging").select("a.btn")[1]["href"]\
-                  .split("index")[1].split(".")[0]) + 1
-    numThread = 10
-    page_grab_num = 10
-
-    for i in range(pageNum, pageNum - page_grab_num, -1):  # 將要爬取的頁數放在queue等待
-        queue.put(i)
-
+    res_list = []
     threads = []
-    for j in range(numThread):  # 建立多執緒清單(執行緒數量:numThread = 10)
+    queue = Queue()
+
+    res = r.get(first_url)
+    soup = bs(res.text, "lxml")
+    page_num = int(soup.select_one("div.btn-group-paging").select("a.btn")[1]["href"]\
+                  .split("index")[1].split(".")[0]) + 1
+    num_thread = 20
+    page_grab_num = 2000
+
+    for i in range(page_num, page_num - page_grab_num, -1):  # 將要爬取的頁數放在queue等待
+        queue.put(i)
+    # 也可改搭配lambda, map, list comprehension 使用
+    # list(map(lambda i: queue.put(i), [i for i in range(page_num, page_num - page_grab_num, -1)]))
+    
+    for j in range(num_thread):  # 建立多執緒清單(執行緒數量:num_thread = 10)
         threads.append(Thread(target=worker))
-
-    # threads = list(map(lambda i:Thread(target=worker), range(numThread)))
-    # 上述的for loop 也可改搭配lambda, map, list comprehension 使用
-
-    thStart = datetime.now()
+        # threads = list(map(lambda i:Thread(target=worker), range(num_thread)))
+    th_start = datetime.now()
     for i in range(len(threads)):  # 將所有執行緒啟動，worker()開始到queue拿取工作
         threads[i].start()
-    for i in range(len(threads)):  # 等所有worker()工作完畢，再執行下一行程式碼:thEnd = datetime.now()
+    for i in range(len(threads)):  # 等所有worker()工作完畢，再執行下一行程式碼:th_end = datetime.now()
         threads[i].join()
-    thEnd = datetime.now()
-    timeSpent = str(thEnd - thStart).split('.')[0]
+    th_end = datetime.now()
+    time_spent = str(th_end - th_start).split('.')[0]
 
-    with open('pttCrawler.json', 'w', encoding="utf-8") as f:  # 將resList存為json檔
-        f.write(json.dumps(resList, ensure_ascii=False, indent=4))
+    with open('pttCrawler.json', 'w', encoding="utf-8") as f:  # 將res_list存為json檔
+        f.write(json.dumps(res_list, ensure_ascii=False, indent=4))
 
-    print("執行緒:" + str(numThread))
-    print("文章數:" + str(len(resList)))
-    print("耗時:" + timeSpent)
-
+    print("執行緒:" + str(num_thread))
+    print("文章數:" + str(len(res_list)))
+    print("耗時:" + time_spent)
