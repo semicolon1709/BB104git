@@ -59,12 +59,12 @@ def forum_crawler(page_num, forum_name):
                 if article_dict['category'] == "食記" and any(word in title for word in area_list) \
                         and all(word not in title for word in exclusive_list):
                     # 判別後呼叫content_crawler()爬取文章內容
-                    article_list.append(content_crawler(title, raw_date, article_dict, article, articles))
+                    article_list.append(content_crawler(title, raw_date, article_dict, article))
             else:
                 # 文章標題有"食記"或"美食"才爬
                 if article_dict['category'] == "食記" or article_dict['category'] == "美食":
                     # 判別後呼叫content_crawler()爬取文章內容
-                    article_list.append(content_crawler(title, raw_date, article_dict, article, articles))
+                    article_list.append(content_crawler(title, raw_date, article_dict, article))
         except:
             pass
     if len(article_list) != 0:
@@ -73,7 +73,7 @@ def forum_crawler(page_num, forum_name):
     articles_grabbed_count.append(len(article_list))
     print("page:" + str(page_num) + " done")
 
-def content_crawler(title, raw_date, article_dict, article, articles):
+def content_crawler(title, raw_date, article_dict, article):
     user_id_list = []
     try:
         article_dict['pushCount'] = article.select_one("span.hl").text.strip()
