@@ -25,10 +25,9 @@ def forum_crawler(page_num, forum_name):
     articles = bs(r.get(url).text, "lxml").select("div.r-ent")
     print("page:{} start".format(page_num))
     articles_visited_count.append(len(articles))
-
+    article_list = []
     # 逐筆爬取該頁文章內容
     for article in articles:
-        article_list = []
         article_dict = {
             "_id": "",
             "title": "",
