@@ -54,7 +54,7 @@ def forum_crawler(page_num, forum_name):
                              "大湖", "三義", "卓蘭"]
                 exclusive_list = ["宜蘭", "台北", "臺北", "板橋", "銅鑼灣"]
 
-                # 文章標題有"食記"或"美食"，且地區在area_list，不在exclusive_list才爬
+                # 文章標題有"食記"，地區在area_list，且不在exclusive_list才爬
                 if article_dict['category'] == "食記" and any(word in title for word in area_list) \
                         and all(word not in title for word in exclusive_list):
                     # 判別後呼叫content_crawler()爬取文章內容
