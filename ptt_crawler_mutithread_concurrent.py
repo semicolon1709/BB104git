@@ -25,7 +25,7 @@ def crawler(page):
         articleDict = {
             "title": "",
             "category": "",
-            "pushCount": "",
+            "pushCount": None,
             "date": "",
             "author": "",
             "content": ""

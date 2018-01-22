@@ -40,7 +40,7 @@ def contendCrawler(linkList):
         try:
             hotCountStr = articleSoup.select_one("hgroup > div.ndArticle_view").text  #爬取新聞觀看數
         except:#新聞內容不一定有觀看數，使用try except處理
-            hotCountStr = "-"
+            hotCountStr = None
         contentStr = articleSoup.select_one("div.ndArticle_margin > p").text #爬取新聞報導內文
         resDict[titleStr] = [timeStr, "人氣:" + hotCountStr, contentStr]#時間、觀看數及新聞報導內文做為resDict的value
         count+=1

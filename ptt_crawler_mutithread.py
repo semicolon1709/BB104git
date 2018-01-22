@@ -31,7 +31,7 @@ def crawler(page):
         article_dict = {
             "title": "",
             "category": "",
-            "pushCount": "",
+            "pushCount": None,
             "date": "",
             "author": "",
             "content": ""
